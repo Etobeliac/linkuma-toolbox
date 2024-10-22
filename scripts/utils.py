@@ -1,5 +1,6 @@
 # scripts/utils.py
 
+import streamlit as st
 import openai
 import logging
 import unicodedata
@@ -35,11 +36,15 @@ def create_collections_from_gpt(thematic, product_names):
             max_tokens=1500
         )
 
-        collections = response.choices[0].message.content.strip().split("\n")
-        logging.info("Collections générées avec succès par ChatGPT.")
-        
-        # Enlever les accents des noms de collections
-        return [remove_accents(c.strip()) for c in collections if c.strip()]
+        if response and response.choices:
+            collections = response.choices[0].message.content.strip().split("\n")
+            logging.info("Collections générées avec succès par ChatGPT.")
+            
+            # Enlever les accents des noms de collections
+            return [remove_accents(c.strip()) for c in collections if c.strip()]
+        else:
+            logging.warning("Aucune réponse valide reçue de ChatGPT.")
+            return []
     except Exception as e:
         logging.error(f"Erreur lors de l'appel à l'API OpenAI : {e}")
         return []
@@ -62,3 +67,58 @@ def categorize_products_with_collections(products, collections):
 
     logging.info("Catégorisation terminée.")
     return categorized_products
+
+def run_create_and_categorize():
+    """Exécuter la fonctionnalité de création et catégorisation."""
+    st.sidebar.title("Navigation")
+    option = st.sidebar.selectbox(
+        "Choisissez une opération:",
+        ("Sélectionnez", "Créer et catégoriser des collections")
+    )
+
+    if option == "Créer et catégoriser des collections":
+        st.title("Créer et catégoriser des collections")
+
+        # Champs de saisie utilisateur
+        api_key = st.text_input("Entrez votre clé API OpenAI", type="password")
+        store_thematic = st.text_input("Entrez la thématique de la boutique")
+        products_input = st.text_area("Entrez les produits (séparés par des virgules)")
+
+        # Bouton pour lancer le processus
+        if st.button("Lancer le processus"):
+            if not api_key or not store_thematic or not products_input:
+                st.error("Merci de fournir tous les champs requis, y compris la clé API !")
+            else:
+                # Configure la clé API OpenAI
+                set_api_key(api_key)
+
+                # Préparer la liste des produits
+                product_list = [p.strip() for p in products_input.split(",")]
+
+                # Générer les collections avec GPT
+                collections = create_collections_from_gpt(store_thematic, product_list)
+
+                # Vérifier si des collections ont été générées
+                if not collections:
+                    st.warning("Aucune collection générée. Merci de réessayer.")
+                else:
+                    # Afficher le tableau des collections générées
+                    st.subheader("Collections générées")
+                    collections_table = [{"Collection": c} for c in collections]
+                    st.table(collections_table)
+
+                    # Catégoriser les produits dans les collections générées
+                    categorized_products = categorize_products_with_collections(product_list, collections)
+
+                    # Préparer les données pour l'affichage des résultats de la catégorisation
+                    categorized_table = [
+                        {
+                            "Produit": product,
+                            "Collections": ", ".join(categories)
+                        }
+                        for product, categories in categorized_products.items()
+                    ]
+
+                    # Afficher le tableau de produits catégorisés
+                    st.subheader("Produits catégorisés")
+                    st.table(categorized_table)
