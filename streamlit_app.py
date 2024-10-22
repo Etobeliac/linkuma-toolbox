@@ -43,14 +43,14 @@ if option1 == 'Tutoriel':
     """)
 
 elif option1 == 'Create Collections':
-    # Remplacez avec le nouveau chemin du fichier
-    file_path = os.path.join('scripts', 'new-creation-collections.py')  # Modifiez le nom du fichier ici
+    # Chemin relatif au fichier `creation-collection.py`
+    file_path = os.path.join('scripts', 'creation-collection.py')  # Utilise le bon chemin
     
     # Afficher le chemin pour le débogage
     st.write(f"Tentative de chargement du module depuis : {file_path}")
     
     # Charger et exécuter le module
-    module = load_module('new_creation_collections', file_path)
+    module = load_module('creation_collection', file_path)
     
     # Appeler la fonction principale du module si elle est chargée avec succès
     if module:
