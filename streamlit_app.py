@@ -42,11 +42,10 @@ if option == 'Tutoriel':
     """)
 
 elif option == 'Create Collections':
-    # Obtenir le répertoire où se trouve l'application Streamlit
-    current_dir = os.path.dirname(__file__)
-    file_path = os.path.join(current_dir, 'scripts', 'creation-collections.py')
+    # Définir le chemin relatif vers le fichier `creation-collections.py`
+    file_path = os.path.join(os.path.dirname(__file__), 'scripts', 'creation-collections.py')
     
-    # Information de débogage sur le chemin utilisé
+    # Afficher le chemin utilisé pour débogage
     st.write(f"Tentative de chargement du module depuis : {file_path}")
     
     # Charger et exécuter le module
