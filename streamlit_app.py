@@ -1,57 +1,41 @@
+# streamlit_app.py
+
 import streamlit as st
-import importlib.util
-import os
+from scripts.utils import create_collections_from_gpt, categorize_products_with_collections
 
-# Titre de l'application
-st.title('ToolBox')
+st.set_page_config(page_title="E-commerce Collection Generator", layout="wide")
 
-# Barre latérale pour la navigation
-st.sidebar.header('Menu')
+st.sidebar.title("E-commerce App")
+st.sidebar.header("Settings")
 
-# Menu déroulant - Ajouter l'option "Create Collections"
-option1 = st.sidebar.selectbox(
-    'G-News', 
-    ['Tutoriel', 'Create Collections']
-)
+# Input fields on the sidebar
+api_key = st.sidebar.text_input("Enter your OpenAI API Key", type="password")
+store_thematic = st.sidebar.text_input("Enter Store Theme")
+products_input = st.sidebar.text_area("Enter Products (comma-separated)")
 
-def load_module(module_name, file_path):
-    if not os.path.isfile(file_path):
-        st.error(f"Le fichier {file_path} est introuvable. Veuillez vérifier le chemin.")
-        st.write(f"Tentative de chargement depuis : {file_path}")  # Information de débogage
-        return None
-    spec = importlib.util.spec_from_file_location(module_name, file_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+# Generate collections button
+if st.sidebar.button("Generate Collections"):
+    if not api_key or not store_thematic or not products_input:
+        st.error("Please provide all inputs!")
+    else:
+        # Set OpenAI API Key
+        create_collections_from_gpt(api_key)
+        
+        # Process the input
+        product_list = [p.strip() for p in products_input.split(",")]
+        
+        # Generate collections
+        collections = create_collections_from_gpt(store_thematic, product_list)
+        
+        if not collections:
+            st.warning("No collections generated. Please try again.")
+        else:
+            st.subheader("Generated Collections")
+            st.write("\n".join(collections))
 
-if option1 == 'Tutoriel':
-    # Afficher un tutoriel ou des explications
-    st.header("Tutoriel - Guide d'Utilisation")
-    st.write("""
-    **Bienvenue dans l'application !**
-    
-    Cette application vous permet de réaliser différentes tâches via des scripts automatisés :
-    
-    - **Create Collections** : Crée des collections et catégories pour vos produits en utilisant ChatGPT.
-    
-    ### Comment Utiliser :
-    
-    - Sélectionnez "Create Collections" dans le menu latéral pour accéder à cette fonctionnalité.
-    - Remplissez les informations nécessaires et lancez le processus pour générer des collections.
-    
-    *Pour toute question supplémentaire, n'hésitez pas à contacter notre équipe de support.*
-    """)
+            # Categorize products
+            categorized_products = categorize_products_with_collections(product_list, collections)
 
-elif option1 == 'Create Collections':
-    # Chemin relatif au fichier `creation-collection.py`
-    file_path = os.path.join('scripts', 'creation-collection.py')  # Utilise le bon chemin
-    
-    # Afficher le chemin pour le débogage
-    st.write(f"Tentative de chargement du module depuis : {file_path}")
-    
-    # Charger et exécuter le module
-    module = load_module('creation_collection', file_path)
-    
-    # Appeler la fonction principale du module si elle est chargée avec succès
-    if module:
-        module.main()
+            st.subheader("Categorized Products")
+            for product, categories in categorized_products.items():
+                st.write(f"{product}: {', '.join(categories)}")
