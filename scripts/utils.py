@@ -1,5 +1,3 @@
-# scripts/utils.py
-
 import streamlit as st
 import openai
 import logging
@@ -30,14 +28,14 @@ def create_collections_from_gpt(thematic, product_names):
             f"Créer jusqu'à un maximum de 30 collections et sous-collections, "
             f"en fonction de la thématique de la boutique '{thematic}' et des noms de mes produits "
             f"'{', '.join(product_names)}', pour une boutique e-commerce. "
-            f"Je veux au moins 5 catégories, mais pas plus de 30, et uniquement le résultat sans commentaires supplémentaires."
+            "Je veux au moins 5 catégories, mais pas plus de 30, et uniquement le résultat sans commentaires supplémentaires."
         )
 
         logging.info(f"Prompt envoyé à OpenAI: {prompt}")
 
         # Appel à l'API OpenAI
         response = openai.ChatCompletion.create(
-            model="gpt-4o-mini",
+            model="gpt-4",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=1500
         )
@@ -46,7 +44,7 @@ def create_collections_from_gpt(thematic, product_names):
         logging.info(f"Réponse brute de l'API: {response}")
 
         if response and response.choices:
-            collections = response.choices[0].message.content.strip().split("\n")
+            collections = response.choices[0].message['content'].strip().split("\n")
             logging.info("Collections générées avec succès par GPT.")
             logging.info(f"Collections: {collections}")
 
@@ -134,3 +132,6 @@ def run_create_and_categorize():
                     # Afficher le tableau de produits catégorisés
                     st.subheader("Produits catégorisés")
                     st.table(categorized_df)
+
+if __name__ == "__main__":
+    run_create_and_categorize()
