@@ -27,18 +27,7 @@ if option == 'Tutoriel':
     # Show tutorial information
     st.header("Tutoriel - Guide d'Utilisation")
     st.write("""
-    **Bienvenue dans l'application !**
-    
-    Cette application vous permet de réaliser différentes tâches via des scripts automatisés :
-    
-    - **Create Collections** : Crée des collections et catégories pour vos produits en utilisant ChatGPT.
-    
-    ### Comment Utiliser :
-    
-    - Sélectionnez "Create Collections" dans le menu latéral pour accéder à cette fonctionnalité.
-    - Remplissez les informations nécessaires et lancez le processus pour générer des collections.
-    
-    *Pour toute question supplémentaire, n'hésitez pas à contacter notre équipe de support.*
+    Loading
     """)
 
 elif option == 'Create Collections':
