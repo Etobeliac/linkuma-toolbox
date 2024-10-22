@@ -8,9 +8,9 @@ st.title('ToolBox')
 # Barre latérale pour la navigation
 st.sidebar.header('Menu')
 
-# Menu déroulant - Ajout de l'option "Create Collections"
-option = st.sidebar.selectbox(
-    'G-News',
+# Menu déroulant - Ajouter l'option "Create Collections"
+option1 = st.sidebar.selectbox(
+    'G-News', 
     ['Tutoriel', 'Create Collections']
 )
 
@@ -24,7 +24,8 @@ def load_module(module_name, file_path):
     spec.loader.exec_module(module)
     return module
 
-if option == 'Tutoriel':
+if option1 == 'Tutoriel':
+    # Afficher un tutoriel ou des explications
     st.header("Tutoriel - Guide d'Utilisation")
     st.write("""
     **Bienvenue dans l'application !**
@@ -41,11 +42,11 @@ if option == 'Tutoriel':
     *Pour toute question supplémentaire, n'hésitez pas à contacter notre équipe de support.*
     """)
 
-elif option == 'Create Collections':
-    # Définir le chemin relatif vers le fichier `creation-collections.py`
-    file_path = os.path.join(os.path.dirname(__file__), 'scripts', 'creation-collections.py')
+elif option1 == 'Create Collections':
+    # Chemin relatif au fichier `creation-collections.py`
+    file_path = os.path.join('scripts', 'creation-collections.py')
     
-    # Afficher le chemin utilisé pour débogage
+    # Afficher le chemin pour le débogage
     st.write(f"Tentative de chargement du module depuis : {file_path}")
     
     # Charger et exécuter le module
