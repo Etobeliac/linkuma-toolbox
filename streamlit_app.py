@@ -2,13 +2,13 @@ import streamlit as st
 import importlib.util
 import os
 
-# Title of the application
+# Titre de l'application
 st.title('ToolBox')
 
-# Sidebar for navigation
+# Barre latérale pour la navigation
 st.sidebar.header('Menu')
 
-# Dropdown - Adding "Create Collections" Option
+# Menu déroulant - Ajout de l'option "Create Collections"
 option = st.sidebar.selectbox(
     'G-News',
     ['Tutoriel', 'Create Collections']
@@ -17,7 +17,7 @@ option = st.sidebar.selectbox(
 def load_module(module_name, file_path):
     if not os.path.isfile(file_path):
         st.error(f"Le fichier {file_path} est introuvable. Veuillez vérifier le chemin.")
-        st.write(f"Attempting to load from: {file_path}")  # Debug information
+        st.write(f"Tentative de chargement depuis : {file_path}")  # Information de débogage
         return None
     spec = importlib.util.spec_from_file_location(module_name, file_path)
     module = importlib.util.module_from_spec(spec)
@@ -25,7 +25,6 @@ def load_module(module_name, file_path):
     return module
 
 if option == 'Tutoriel':
-    # Show tutorial information
     st.header("Tutoriel - Guide d'Utilisation")
     st.write("""
     **Bienvenue dans l'application !**
@@ -43,12 +42,16 @@ if option == 'Tutoriel':
     """)
 
 elif option == 'Create Collections':
-    # Path to the script for creating collections
-    file_path = os.path.join(os.getcwd(), 'scripts', 'creation-collections.py')
+    # Obtenir le répertoire où se trouve l'application Streamlit
+    current_dir = os.path.dirname(__file__)
+    file_path = os.path.join(current_dir, 'scripts', 'creation-collections.py')
     
-    # Load and execute the module
+    # Information de débogage sur le chemin utilisé
+    st.write(f"Tentative de chargement du module depuis : {file_path}")
+    
+    # Charger et exécuter le module
     module = load_module('creation_collections', file_path)
     
-    # Call the main function of the module if successfully loaded
+    # Appeler la fonction principale du module si elle est chargée avec succès
     if module:
         module.main()
