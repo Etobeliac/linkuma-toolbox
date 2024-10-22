@@ -3,6 +3,7 @@
 import streamlit as st
 import openai
 import logging
+import pandas as pd
 import unicodedata
 
 # Configurer le logger
@@ -102,15 +103,15 @@ def run_create_and_categorize():
                 if not collections:
                     st.warning("Aucune collection générée. Merci de réessayer.")
                 else:
-                    # Afficher le tableau des collections générées
+                    # Afficher le tableau des collections générées avec pandas
                     st.subheader("Collections générées")
-                    collections_table = [{"Collection": c} for c in collections]
-                    st.table(collections_table)
+                    collections_df = pd.DataFrame({"Collection": collections})
+                    st.table(collections_df)
 
                     # Catégoriser les produits dans les collections générées
                     categorized_products = categorize_products_with_collections(product_list, collections)
 
-                    # Préparer les données pour l'affichage des résultats de la catégorisation
+                    # Préparer les données pour l'affichage des résultats de la catégorisation avec pandas
                     categorized_table = [
                         {
                             "Produit": product,
@@ -118,7 +119,9 @@ def run_create_and_categorize():
                         }
                         for product, categories in categorized_products.items()
                     ]
+                    
+                    categorized_df = pd.DataFrame(categorized_table)
 
                     # Afficher le tableau de produits catégorisés
                     st.subheader("Produits catégorisés")
-                    st.table(categorized_table)
+                    st.table(categorized_df)
