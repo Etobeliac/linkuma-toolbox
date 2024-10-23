@@ -33,7 +33,7 @@ def create_collections_from_gpt(thematic: str, product_names: list) -> list:
 
         logging.info(f"Prompt envoyé à OpenAI: {prompt}")
 
-        # Appel à l'API OpenAI avec la nouvelle méthode basée sur `openai.ChatCompletion`
+        # Mise à jour de l'appel à l'API OpenAI avec la nouvelle méthode
         response = openai.ChatCompletion.create(
             model="gpt-4",  # Spécifie le modèle que tu souhaites utiliser
             messages=[{"role": "user", "content": prompt}],
