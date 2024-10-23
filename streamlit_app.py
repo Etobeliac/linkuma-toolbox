@@ -1,6 +1,5 @@
-# streamlit_app.py
-
-from scripts.utils import run_create_and_categorize
+import scripts.utils as utils
 
 # Appel à la fonction pour exécuter l'application
-run_create_and_categorize()
+if __name__ == "__main__":
+    utils.run_create_and_categorize()
